@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+
+{% block title %} School CRM - Departments List {% endblock %}
+
+{% block content %}
+    <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 p-8">
+        <div class="mb-8 flex justify-between items-center">
+            <h1 class="text-2xl font-bold">Departments</h1>
+            <div class="flex items-center space-x-4">
+                <form class="relative flex items-center" method="get">
+                    <input value="{{ search }}" name="search" type="search" placeholder="Search departments..."
+                           class="pl-10 pr-4 py-2 border rounded-lg">
+                    <button type="submit" class="absolute left-3 top-3 text-gray-400">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </form>
+                <a href="{% url 'departments:create' %}" class="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg">
+                    <i class="bi bi-plus"></i>
+                    <span>Add Department</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="bg-white p-4 rounded-lg shadow-sm mb-6">
+            <form class="flex flex-wrap gap-4" method="get">
+                <select name="boss" class="border rounded-lg px-4 py-2" onchange="this.form.submit()">
+                    <option value="">All Heads</option>
+                    {% for boss in bosses %}
+                        <option value="{{ boss.id }}" {% if boss.id|stringformat:"s" == selected_boss %}selected{% endif %}>
+                            {{ boss.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+                <select name="status" class="border rounded-lg px-4 py-2" onchange="this.form.submit()">
+                    <option value="">All Status</option>
+                    <option value="ac" {% if selected_status == "ac" %}selected{% endif %}>Active</option>
+                    <option value="in" {% if selected_status == "in" %}selected{% endif %}>Inactive</option>
+                </select>
+                <a href="{% url 'departments:list' %}"
+                   class="px-4 py-2 text-white bg-red-600 hover:bg-red-700 rounded-lg transition duration-300 ease-in-out shadow-md">
+                    Clear Filters
+                </a>
+
+            </form>
+        </div>
+        <!-- Departments Table -->
+        {% if departments %}
+        <div class="bg-white rounded-lg shadow-sm">
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead class="bg-gray-50 border-b">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">
+                                <div class="flex items-center space-x-1">
+                                    <span>Department Name</span>
+                                    <i class="bi bi-arrow-down-up"></i>
+                                </div>
+                            </th>
+                            <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Head</th>
+                            <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Teachers</th>
+                            <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Subjects</th>
+                            <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Status</th>
+                            <th class="px-6 py-3 text-left text-sm font-medium text-gray-500">Actions</th>
+                        </tr>
+                    </thead>
+                    {% for department in departments %}
+                    <tbody class="divide-y">
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4">
+                                <div class="flex items-center space-x-3">
+                                    <div class="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
+                                        <i class="bi bi-building text-blue-600"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium">{{ department.name }}</p>
+                                        <p class="text-sm text-gray-500">Natural Sciences</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 text-sm">{{ department.boss }}</td>
+                            <td class="px-6 py-4 text-sm">{{ department.teachers.count }} teachers</td>
+                            <td class="px-6 py-4 text-sm">
+                                {% for subject in department.subjects.all %}
+                                    {{ subject.name }}{% if not forloop.last %}, {% endif %}
+                                {% endfor %}
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-sm">
+                                    {{ department.get_status_display }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center space-x-3">
+                                    <a href="{{ department.get_detail_url }}" class="text-blue-600 hover:text-blue-800">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <a href="{{ department.get_update_url }}" class="text-gray-600 hover:text-gray-800">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a href="{{ department.get_delete_url }}" class="text-red-600 hover:text-red-800">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                    {% endfor %}
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="px-6 py-4 border-t">
+                <div class="flex justify-between items-center">
+                    <p class="text-sm text-gray-600">Showing 1 to 10 of 12 departments</p>
+                    <div class="flex space-x-2">
+                        <button class="px-3 py-1 border rounded hover:bg-gray-50">Previous</button>
+                        <button class="px-3 py-1 border rounded bg-blue-600 text-white">1</button>
+                        <button class="px-3 py-1 border rounded hover:bg-gray-50">2</button>
+                        <button class="px-3 py-1 border rounded hover:bg-gray-50">Next</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+            <h3 class="text-2xl font-bold text-center text-gray-800 bg-gray-300 p-4 rounded-lg shadow-lg transform transition duration-500 hover:scale-105 hover:text-red-600">
+                <i class="bi bi-exclamation-circle-fill text-red-500 mr-3 transform transition duration-500 hover:scale-125"></i>
+                Departments are not available !
+            </h3>
+        {% endif %}
+    </main>
+{% endblock %}
+
