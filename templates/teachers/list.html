@@ -98,7 +98,10 @@
                                 {% endfor %}
                             </td>
                             <td class="px-6 py-4">
-                                <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-sm">
+                                <span class="px-2 py-1 rounded-full text-sm
+                                    {% if teacher.status == 'ac' %}bg-green-100 text-green-800
+                                    {% elif teacher.status == 'in' %}bg-red-100 text-red-800
+                                    {% else %}bg-gray-100 text-gray-800{% endif %}">
                                     {{ teacher.get_status_display }}
                                 </span>
                             </td>

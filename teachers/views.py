@@ -52,6 +52,7 @@ def teacher_create(request):
 
 def teacher_detail(request, pk, year, month, day, slug):
     students = Student.objects.all()
+    subjects = Subject.objects.all()
     teacher = get_object_or_404(
         Teacher,
         pk=pk,
@@ -63,6 +64,7 @@ def teacher_detail(request, pk, year, month, day, slug):
     ctx = {
         'teacher': teacher,
         'students': students,
+        'subjects': subjects,
     }
     return render(request,'teachers/detail.html', ctx)
 
@@ -75,7 +77,11 @@ def teacher_update(request, pk):
             return redirect("teachers:list")
     else:
         form = TeacherForm(instance=teacher)
-    return render(request, 'teachers/form.html', {'form': form})
+    ctx = {
+        'form': form,
+        'teacher': teacher,
+    }
+    return render(request, 'teachers/form.html', ctx)
 
 def teacher_delete(request, pk):
     teacher = get_object_or_404(Teacher, pk=pk)

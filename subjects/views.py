@@ -82,7 +82,11 @@ def subject_update(request, pk):
             return redirect('subjects:list')
     else:
         form = SubjectForm(instance=subject)
-    return render(request,'subjects/form.html', {'form': form})
+    ctx = {
+        'form': form,
+        'subject': subject,
+    }
+    return render(request,'subjects/form.html', ctx)
 
 def subject_delete(request, pk):
     subject = get_object_or_404(Subject, pk=pk)

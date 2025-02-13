@@ -78,12 +78,19 @@
                                 <label class="block text-sm text-gray-500">Total Students</label>
                                 <p class="text-2xl font-bold">{{ students.count }}</p>
                             </div>
-                            <div>
-                                <label class="block text-sm text-gray-500">Active Subjects</label>
-                                <p class="text-2xl font-bold">
-                                    {{ department.subjects.count }}
-                                </p>
-                            </div>
+                             {% if department.subjects.all %}
+                                <div>
+                                    <label class="block text-sm text-gray-500">Active Subjects</label>
+                                    <p class="text-2xl font-bold">
+                                        {% for subject in department.subjects.all %}
+                                            {% if subject.status == 'ac' %}
+                                                {{ subject.name }}{% if not forloop.last %}, {% endif %}
+                                            {% endif %}
+                                        {% endfor %}
+                                    </p>
+                                </div>
+                            {% endif %}
+
                         </div>
                     </div>
                 </div>
@@ -118,7 +125,9 @@
                         {% for teacher in teachers %}
                             <div class="flex items-center space-x-4 p-4 border rounded-lg">
                                 <div class="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center">
-                                    <i class="bi bi-person text-2xl text-gray-400"></i>
+                                    <div class="rounded-full w-12 h-12 bg-gray-100 flex items-center justify-center overflow-hidden">
+                                        <img src="{{ teacher.image.url }}" class="w-full h-full object-cover rounded-full">
+                                    </div>
                                 </div>
                                 <div>
                                     <h3 class="font-medium">{{ teacher.first_name }} {{ teacher.last_name }}</h3>
@@ -169,8 +178,8 @@
                     <div class="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {% for student in students %}
                             <div class="flex items-center space-x-4 p-4 border rounded-lg">
-                                <div class="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center">
-                                    <i class="bi bi-person-circle text-2xl text-gray-400"></i>
+                                <div class="rounded-full w-12 h-12 bg-gray-100 flex items-center justify-center overflow-hidden">
+                                    <img src="{{ student.image.url }}" class="w-full h-full object-cover rounded-full">
                                 </div>
                                 <div>
                                     <h3 class="font-medium">{{ student.first_name }} {{ student.last_name }}</h3>

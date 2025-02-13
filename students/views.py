@@ -67,7 +67,11 @@ def student_update(request, pk):
             return redirect('students:list')
     else:
         form = StudentForm(instance=student)
-    return render(request,'students/form.html', {'form': form})
+    ctx = {
+        'form': form,
+        'student': student,
+    }
+    return render(request,'students/form.html', ctx)
 
 def student_delete(request, pk):
     student = get_object_or_404(Student, pk=pk)

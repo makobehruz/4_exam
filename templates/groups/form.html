@@ -1,17 +1,18 @@
 {% extends 'base.html' %}
 
-{% block title %} School CRM - Add/Edit Group {% endblock %}
+{% block title %}{% if group %} School CRM - Edit Group {% else %} School CRM - Add Group {% endif %}{% endblock %}
 
 {% block content %}
     <!-- Main content -->
     <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 p-8">
         <div class="max-w-3xl mx-auto">
             <!-- Header -->
-            <div class="mb-8">
-                <h1 class="text-2xl font-bold">Add New Group</h1>
-                <p class="text-gray-500">Create a new group or edit an existing one</p>
+            <div class="mb-8 flex items-center justify-between">
+                <h1 class="text-2xl font-bold">{% if group %} Update Group {% else %} Add Group {% endif %}</h1>
+                <a href="{% url 'groups:list' %}" class="text-gray-500 hover:text-gray-700">
+                    <i class="bi bi-x-lg"></i>
+                </a>
             </div>
-
             <!-- Group Form -->
             <form class="bg-white rounded-lg shadow-sm p-6" method="post">
                 {% csrf_token %}
@@ -62,7 +63,11 @@
                 </div>
                 <div class="flex justify-end space-x-4">
                     <a href="{% url 'groups:list' %}" type="button" class="px-4 py-2 border rounded-md hover:bg-gray-50">Cancel</a>
-                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Save Group</button>
+                    {% if group %}
+                        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Edit Group</button>
+                    {% else %}
+                            <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">Save Group</button>
+                    {% endif %}
                 </div>
             </form>
         </div>

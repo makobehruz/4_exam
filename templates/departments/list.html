@@ -32,11 +32,12 @@
                         </option>
                     {% endfor %}
                 </select>
-                <select name="status" class="border rounded-lg px-4 py-2" onchange="this.form.submit()">
+                <select name="status" class="border rounded-lg px-4 py-2" id="status-select" onchange="changeColor(this)">
                     <option value="">All Status</option>
                     <option value="ac" {% if selected_status == "ac" %}selected{% endif %}>Active</option>
                     <option value="in" {% if selected_status == "in" %}selected{% endif %}>Inactive</option>
                 </select>
+                {% load static %}
                 <a href="{% url 'departments:list' %}"
                    class="px-4 py-2 text-white bg-red-600 hover:bg-red-700 rounded-lg transition duration-300 ease-in-out shadow-md">
                     Clear Filters
@@ -86,7 +87,10 @@
                                 {% endfor %}
                             </td>
                             <td class="px-6 py-4">
-                                <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-sm">
+                                <span class="px-2 py-1 rounded-full text-sm
+                                    {% if department.status == 'ac' %}bg-green-100 text-green-800
+                                    {% elif department.status == 'in' %}bg-red-100 text-red-800
+                                    {% else %}bg-gray-100 text-gray-800{% endif %}">
                                     {{ department.get_status_display }}
                                 </span>
                             </td>

@@ -1,4 +1,5 @@
-from django.db.models import Count
+from telnetlib import STATUS
+
 from django.shortcuts import render, redirect, get_object_or_404
 
 from .models import Department, Boss
@@ -10,18 +11,17 @@ from teachers.models import Teacher
 
 
 def home(request):
-    total_groups = Group.objects.count()
-    total_students = Student.objects.count()
-    total_subjects = Subject.objects.count()
-    total_teachers = Teacher.objects.count()
+    students = Student.objects.all()
+    teachers = Teacher.objects.all()
+    subjects = Subject.objects.all()
+    groups_count = Group.objects.filter(status='ac').count()
     subject_names = [subject.name for subject in Subject.objects.all()]
     subject_teachers_counts = [subject.teacher.count() for subject in Subject.objects.all()]
-
     ctx = {
-        'total_groups': total_groups,
-        'total_students': total_students,
-        'total_subjects': total_subjects,
-        'total_teachers': total_teachers,
+        'students': students,
+        'subjects': subjects,
+        'groups_count': groups_count,
+        'teachers': teachers,
         'subject_names': subject_names,
         'subject_teachers_counts': subject_teachers_counts,
     }
@@ -68,10 +68,10 @@ def department_detail(request, pk, year, month, day, slug):
         created_at__month=month,
         created_at__day=day,
     )
+    department.subjects.filter(status='ac')
     teachers = Teacher.objects.filter(department=department)
     subjects = Subject.objects.filter(department=department)
     students = Student.objects.all()
-
     ctx = {
         'department': department,
         'students': students,
@@ -89,7 +89,11 @@ def department_update(request, pk):
             return redirect('departments:list')
     else:
         form = DepartmentForm(instance=department)
-    return render(request,'departments/form.html', {'form': form})
+    ctx = {
+        'form': form,
+        'department': department
+    }
+    return render(request,'departments/form.html', ctx)
 
 def department_delete(request, pk):
     department = get_object_or_404(Department, pk=pk)

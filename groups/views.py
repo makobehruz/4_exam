@@ -80,7 +80,11 @@ def group_update(request, pk):
             return redirect('groups:list')
     else:
         form = GroupForm(instance=group)
-    return render(request,'groups/form.html', {'form': form})
+    ctx = {
+        'form': form,
+        'group': group,
+    }
+    return render(request,'groups/form.html', ctx)
 
 def group_delete(request, pk):
     group = get_object_or_404(Group, pk=pk)

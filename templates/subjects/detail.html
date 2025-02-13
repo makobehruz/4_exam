@@ -54,7 +54,10 @@
                         </div>
                         <div>
                             <label class="block text-sm text-gray-500">Status</label>
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                            <span class="px-2 py-1 rounded-full text-sm
+                                {% if subject.status == 'ac' %}bg-green-100 text-green-800
+                                {% elif subject.status == 'in' %}bg-red-100 text-red-800
+                                {% else %}bg-gray-100 text-gray-800{% endif %}">
                                 {{ subject.get_status_display }}
                             </span>
                         </div>
@@ -82,11 +85,7 @@
                         <div class="space-y-4">
                             <div>
                                 <label class="block text-sm text-gray-500">Total Groups</label>
-                                {% if subject.total_groups %}
-                                    <p class="text-2xl font-bold">{{ subject.groups.count }}</p>
-                                 {% else %}
-                                     0
-                                {% endif %}
+                                <p class="text-2xl font-bold">{{ subject.groups.count }}</p>
                             </div>
                             <div>
                                 <label class="block text-sm text-gray-500">Total Students</label>
@@ -95,10 +94,6 @@
                                 {% else %}
                                      0
                                 {% endif %}
-                            </div>
-                            <div>
-                                <label class="block text-sm text-gray-500">Average Grade</label>
-                                <p class="text-2xl font-bold">B+</p>
                             </div>
                         </div>
                     </div>

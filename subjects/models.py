@@ -1,6 +1,5 @@
 from django.db import models
 from django.utils.text import slugify
-
 from departments.base_model import BaseModel
 from departments.models import Department
 from django.shortcuts import reverse
@@ -18,6 +17,14 @@ class Subject(BaseModel):
         ('in', 'Inactive'),
     ]
     GRADE_LEVELS = [
+        ('1', 'Grade 1'),
+        ('2', 'Grade 2'),
+        ('3', 'Grade 3'),
+        ('4', 'Grade 4'),
+        ('5', 'Grade 5'),
+        ('6', 'Grade 6'),
+        ('7', 'Grade 7'),
+        ('8', 'Grade 8'),
         ('9', 'Grade 9'),
         ('10', 'Grade 10'),
         ('11', 'Grade 11'),

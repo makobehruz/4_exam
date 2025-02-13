@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 
-{% block title %} School CRM - Add Teacher {% endblock %}
+{% block title %}{% if teacher %} School CRM - Update Teacher {% else %} School CRM - Add Teacher {% endif %} {% endblock %}
 
 {% block content %}
      <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 p-8">
         <div class="max-w-2xl mx-auto">
             <div class="mb-8 flex items-center justify-between">
-                <h1 class="text-2xl font-bold">Add Teacher</h1>
-                <a href="list.html" class="text-gray-500 hover:text-gray-700">
+                <h1 class="text-2xl font-bold">{% if teacher %} Update Teacher {% else %} Add Teacher {% endif %}</h1>
+                <a href="{% url 'teachers:list' %}" class="text-gray-500 hover:text-gray-700">
                     <i class="bi bi-x-lg"></i>
                 </a>
             </div>
@@ -20,16 +20,39 @@
                             Profile Photo
                         </label>
                         <div class="flex items-center space-x-4">
-                            <div class="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center">
-                                {% if teacher.image.url %}
-                                    <img src="{{ teacher.image.url }}" class="w-20 h-20 rounded-full object-cover">
+                            <div class="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden">
+                                {% if teacher.image %}
+                                    <img id="imagePreview" src="{{ teacher.image.url }}" class="w-20 h-20 rounded-full object-cover">
                                 {% else %}
-                                    <span class="text-gray-400">No image</span>
+                                    <img id="imagePreview" src="" class="w-20 h-20 rounded-full object-cover hidden">
                                 {% endif %}
                             </div>
-                            {{ form.image }}
+                            <input id="imageInput" type="file" name="image" accept="image/*" class="block">
                         </div>
                     </div>
+
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function () {
+                            const imageInput = document.getElementById('imageInput');
+                            const imagePreview = document.getElementById('imagePreview');
+
+                            imageInput.addEventListener('change', function (event) {
+                                const file = event.target.files[0];
+
+                                if (file) {
+                                    const reader = new FileReader();
+
+                                    reader.onload = function (e) {
+                                        imagePreview.src = e.target.result;
+                                        imagePreview.classList.remove("hidden"); // Rasmni ko‘rsatish
+                                    };
+
+                                    reader.readAsDataURL(file);
+                                }
+                            });
+                        });
+                    </script>
+
 
                     <!-- Personal Information -->
                     <div class="grid grid-cols-2 gap-4">
@@ -103,10 +126,17 @@
                             class="px-4 py-2 border rounded-lg hover:bg-gray-50">
                             Cancel
                         </a>
+                        {% if teacher %}
                         <button type="submit"
+                            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                            Update Teacher
+                        </button>
+                        {% else %}
+                         <button type="submit"
                             class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
                             Save Teacher
                         </button>
+                        {% endif %}
                     </div>
                 </div>
             </form>
